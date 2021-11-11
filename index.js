@@ -4,7 +4,8 @@
 const AWS = require('aws-sdk');
 const S3 = new AWS.S3({signatureVersion: 'v4'});
 const Sharp = require('sharp');
-const PathPattern = /(.*\/)?(.*)\/(.*)/;
+//200x200/resources/2021/10/19/1634640670139.jpg
+const PathPattern = /(.+x.+?)\/(.*\/)(.*)/;
 
 // parameters
 const {BUCKET, URL} = process.env;
@@ -13,11 +14,12 @@ const WHITELIST = process.env.WHITELIST
     : null;
 
 
+
 exports.handler = async (event) => {
-    const path = event.queryStringParameters.path;
-    const parts = PathPattern.exec(path);
-    const dir = parts[1] || '';
-    const resizeOption = parts[2];  // e.g. "150x150_max"
+    const path = event.queryStringParameters.path;//  文件路径   200x200/resources/2021/10/19/1634640670139.jpg
+    const parts = PathPattern.exec(path);  
+    const dir = parts[2] || '';         // resources/2021/10/19/
+    const resizeOption = parts[1];  // e.g. "150x150_max" // 200x200
     const sizeAndAction = resizeOption.split('_');
     const filename = parts[3];
 
